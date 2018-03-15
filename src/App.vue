@@ -2,7 +2,7 @@
   <div id="app">
     <el-container :class="{'islogin': this.$route.name === 'login'}">
       <el-aside style="width: 200px;">
-        <el-menu default-active="1-4-1" :router="true" @open="handleOpen" @close="handleClose" background-color="#545c64" text-color="#fff" active-text-color="#409EFF">
+        <el-menu default-active="1-4-1" :router="true" @open="handleOpen" @close="handleClose" background-color="#545c64" text-color="#fff" active-text-color="#fff">
           <div v-for="i in appMenu" :key="i.title" >
             <el-submenu :index="i.index" v-if="i.children" :disabled="i.disabled">
               <template slot="title">
@@ -30,14 +30,8 @@
       </el-aside>
       <el-container>
         <el-header>
-          <el-tabs v-model="appTabsValue" type="card" closable @tab-remove="removeTab">
-            <el-tab-pane
-              v-for="i in appTabs"
-              :key="i.name"
-              :label="i.title"
-              :name="i.name"
-            >
-            </el-tab-pane>
+          <el-tabs v-model="appTabsValue" type="card" @tab-remove="removeTab" @tab-click="clickTab">
+            <el-tab-pane v-for="i in appTabs" :key="i.name" :label="i.title" :path="i.path" :name="i.name" :closable="i.closable"></el-tab-pane>
           </el-tabs>
           <el-dropdown @command="dropdownClick">
             <span class="el-dropdown-link">
@@ -51,7 +45,9 @@
           </el-dropdown>
         </el-header>
         <el-main>
-          <router-view/>
+          <keep-alive :include="includeView">
+            <router-view></router-view>
+          </keep-alive>
         </el-main>
       </el-container>
     </el-container>
@@ -64,30 +60,45 @@ export default {
   data() {
     return {
       appMenu: [
-        { index:'dashboard', title: '首页', icon: 'el-icon-menu'},
-        {
-          index: '11', title: '导航一', icon: 'el-icon-location', children: [
-            {index: '11-1', title: '导航1', icon: 'el-icon-location'},
-            {index: '11-2', title: '导航2', icon: 'el-icon-location'}
-          ],
-          group:[
-            {
-              title: '分组', children: [
-                {index: '1-1', title: '导航1', icon: 'el-icon-location'},
-                {index: '1-2', title: '导航2', icon: 'el-icon-location'}
-              ]
-            }
-          ]
-        },
-        { index: '2', title: '导航二', icon: 'el-icon-menu' },
-        { index: '2', title: '导航三', icon: 'el-icon-setting', disabled: true }
+        { index:'/dashboard', title: '首页', icon: 'el-icon-menu'},
+        { index:'/vTable', title: '表格', icon: 'el-icon-location'},
+        { index:'/vForm', title: '表单', icon: 'el-icon-tickets'},
+        // {
+        //   index: '11', title: '导航一', icon: 'el-icon-location', children: [
+        //     {index: '11-1', title: '导航1', icon: 'el-icon-location'},
+        //     {index: '11-2', title: '导航2', icon: 'el-icon-location'}
+        //   ],
+        //   group:[
+        //     {
+        //       title: '分组', children: [
+        //         {index: '1-1', title: '导航1', icon: 'el-icon-location'},
+        //         {index: '1-2', title: '导航2', icon: 'el-icon-location'}
+        //       ]
+        //     }
+        //   ]
+        // },
+        // { index: '2', title: '导航二', icon: 'el-icon-menu' },
+        // { index: '2', title: '导航三', icon: 'el-icon-setting', disabled: true }
       ],
-      appTabsValue: '/',
+      appTabsValue: '/dashboard',
       appTabs: [{
         title: '首页',
-        name: '/'
+        path: '/dashboard',
+        name: 'dashboard',
+        closable: false
       }]
     };
+  },
+  computed: {
+    includeView: function () {
+      const _this = this
+      let tabs = _this.appTabs
+      let list = []
+      tabs.forEach(e => {
+        list.push(e.name)
+      })
+      return list.join(',')
+    }
   },
   methods: {
     handleOpen(key, keyPath) {
@@ -96,18 +107,38 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     },
-    addTab(targetName) {
-      this.appTabs.push({
-        title: 'New Tab',
-        name: targetName,
-        content: 'New Tab content'
-      });
-      this.appTabsValue = targetName;
-      console.log(targetName)
+    addTab(route) {
+      const _this = this
+      let tabs = _this.appTabs
+      let title = route.path
+      let path = route.path
+      let name = route.name
+      let isExist = false
+      _this.$router.options.routes.forEach(e => {
+        if(e.name === name){
+          title = e.title
+          return false
+        }
+      })
+      tabs.forEach(e => {
+        if(e.name === name){
+          isExist = true
+        }
+      })
+      if(name !== 'login' && !isExist){
+        tabs.push({
+          title: title,
+          name: name,
+          path: path,
+          closable: true
+        })
+      }
+      _this.appTabsValue = name;
     },
     removeTab(targetName) {
-      let tabs = this.editableTabs2;
-      let activeName = this.editableTabsValue2;
+      const _this = this
+      let tabs = _this.appTabs;
+      let activeName = _this.appTabsValue;
       if (activeName === targetName) {
         tabs.forEach((tab, index) => {
           if (tab.name === targetName) {
@@ -118,15 +149,20 @@ export default {
           }
         });
       }
-      
-      this.editableTabsValue2 = activeName;
-      this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
+      _this.appTabsValue = activeName;
+       _this.$router.push(activeName)
+      _this.appTabs = tabs.filter(tab => tab.name !== targetName);
     },
-    dropdownClick(command){
+    dropdownClick(command) {
       const _this = this
       if(command === 'logout'){
         _this.$router.push('/login')
+        _this.appTabs = _this.appTabs.filter(tab => tab.closable === false)
       }
+    },
+    clickTab(target) {
+      const _this = this
+      _this.$router.push(_this.appTabs[target.index].path)
     }
   },
   beforeMount () {
@@ -134,6 +170,10 @@ export default {
     console.log(_this.$route.name)
     document.title = 'vue-admin 后台管理平台'
   },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    '$route': 'addTab'
+  }
 }
 </script>
 
@@ -163,18 +203,27 @@ html, body{
   }
   .el-header {
     position: relative;
+    .el-tabs--card>.el-tabs__header .el-tabs__item.is-closable:hover{
+      padding-left: 20px;
+      padding-right: 20px;
+    }
     .el-tabs__header {
       margin: 20px 0 0;
     }
     .el-tabs__item {
       height: 35px;
       line-height: 35px;
+      .el-icon-close{
+        width: initial;
+      }
     }
     .el-dropdown {
       position: absolute;
       top: 10px;
       right: 15px;
       cursor: pointer;
+      z-index: 2;
+      background: #fff;
     }
   }
   .islogin{
