@@ -29,7 +29,7 @@
         </el-menu>
       </el-aside>
       <el-container>
-        <el-header>
+        <el-header style="height: 56px;">
           <el-tabs v-model="appTabsValue" type="card" @tab-remove="removeTab" @tab-click="clickTab">
             <el-tab-pane v-for="i in appTabs" :key="i.name" :label="i.title" :path="i.path" :name="i.name" :closable="i.closable"></el-tab-pane>
           </el-tabs>
@@ -200,6 +200,10 @@ html, body{
   }
   .el-main {
     height: 100%;
+    padding: 0px;
+    & > div {
+      padding: 20px;
+    }
   }
   .el-header {
     position: relative;
