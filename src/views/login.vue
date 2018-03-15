@@ -32,8 +32,8 @@ export default {
     };
     return {
       form: {
-        name: '',
-        password: ''
+        name: 'admin',
+        password: 'admin0001'
       },
       rules: {
         name: [
@@ -51,10 +51,9 @@ export default {
       const _this = this
       _this.$refs.form.validate((valid) => {
         if (valid) {
-          console.log('submit!');
-          _this.islogin = true
+          _this.islogin = true;
+          _this.$router.push('/dashboard')
         } else {
-          console.log('error submit!!');
           return false;
         }
       });
@@ -68,11 +67,12 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%;
   .el-form{
     margin-top: -50px;
     padding: 20px 50px;
     border: 1px solid #ebebeb;
+    background: #fff;
     border-radius: 3px;
     width: 300px;
     .el-button{
