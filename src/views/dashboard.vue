@@ -1,6 +1,6 @@
 <template>
   <div id="dashboard">
-    dashboard
+    欢迎进入{{$adminConfig.title}}
   </div>
 </template>
 

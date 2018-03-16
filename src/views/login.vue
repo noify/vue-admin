@@ -52,7 +52,13 @@ export default {
       _this.$refs.form.validate((valid) => {
         if (valid) {
           _this.islogin = true;
-          _this.$router.push('/dashboard')
+          setTimeout(() => {
+            _this.$message({
+              type: 'success',
+              message: `登录成功! 欢迎进入${_this.$adminConfig.title}`
+            });
+            _this.$router.push('/dashboard')
+          }, 1000)
         } else {
           return false;
         }
@@ -75,6 +81,7 @@ export default {
     background: #fff;
     border-radius: 3px;
     width: 300px;
+    text-align: center;
     .el-button{
       width: 240px;
     }

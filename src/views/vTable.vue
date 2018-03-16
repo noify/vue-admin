@@ -1,6 +1,7 @@
 <template>
   <div id="vTable">
     <el-table
+      v-loading="isloading" 
       :data="tableData4"
       :default-sort = "{prop: 'date', order: 'descending'}"
       >
@@ -48,12 +49,13 @@
             @click.native.prevent="deleteRow(scope.$index, tableData4)"
             type="text"
             size="small">
-            移除
+            删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-pagination
+      v-show="!isloading"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage4"
@@ -62,7 +64,7 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="400">
     </el-pagination>
-    <el-dialog title="收货地址" :visible.sync="dialogFormVisible" :modal-append-to-body="false" :close-on-click-modal="false">
+    <el-dialog title="收货地址" :visible.sync="dialogFormVisible" :modal-append-to-body="false" :close-on-click-modal="false" :modal="false">
       <el-form :model="form">
         <el-form-item label="活动名称" :label-width="formLabelWidth">
           <el-input v-model="form.name" auto-complete="off"></el-input>
@@ -87,7 +89,22 @@ export default {
   name: 'vTable',
   methods: {
     deleteRow(index, rows) {
-      rows.splice(index, 1);
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        rows.splice(index, 1);
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
     },
     go(index) {
       const _this = this
@@ -102,6 +119,9 @@ export default {
     }
   },
   beforeMount () {
+    const _this = this
+    setTimeout(() => _this.isloading = false, 1000)
+    
   },
   data() {
     return {
@@ -167,7 +187,8 @@ export default {
         resource: '',
         desc: ''
       },
-      formLabelWidth: '120px'
+      formLabelWidth: '120px',
+      isloading: true
     }
   }
 }
