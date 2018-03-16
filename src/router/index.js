@@ -9,10 +9,17 @@ const dashboard = r => require.ensure([], () => r(require('@/views/dashboard')),
 const vTable = r => require.ensure([], () => r(require('@/views/vTable')), 'vTable') // 表格
 const vForm = r => require.ensure([], () => r(require('@/views/vForm')), 'vForm') // 表单
 
+const elelayout = r => require.ensure([], () => r(require('@/views/element/layout')), 'elelayout') // 布局
+const elecontainer = r => require.ensure([], () => r(require('@/views/element/container')), 'elecontainer') // 布局容器
+const elebutton = r => require.ensure([], () => r(require('@/views/element/button')), 'elebutton') // 按钮
+
 const layoutChildren = [
-  { path: '/vForm', name: 'vForm', title: '表单', component: vForm },
-  { path: '/vTable', name: 'vTable', title: '表格', component: vTable },
-  { path: '/dashboard', name: 'dashboard', title: '首页', component: dashboard }
+  { path: '/dashboard', name: 'dashboard', component: dashboard },
+  { path: '/vForm', name: 'vForm', component: vForm },
+  { path: '/vTable', name: 'vTable', component: vTable },
+  { path: '/elelayout', name: 'elelayout', component: elelayout },
+  { path: '/elecontainer', name: 'elecontainer', component: elecontainer },
+  { path: '/elebutton', name: 'elebutton', component: elebutton },
 ]
 
 export default new Router({

@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'login',
   data() {
@@ -46,6 +48,11 @@ export default {
       islogin: false
     }
   },
+  computed: {
+    ...mapState({
+      adminTitle: state => state.adminConfig.title,
+    })
+  },
   methods: {
     onSubmit() {
       const _this = this
@@ -55,8 +62,9 @@ export default {
           setTimeout(() => {
             _this.$message({
               type: 'success',
-              message: `登录成功! 欢迎进入${_this.$adminConfig.title}`
+              message: `登录成功! 欢迎进入${_this.adminTitle}`
             });
+            _this.$store.commit('setAdminConfig', {type: 'adminName', value: '管理者'})
             _this.$router.push('/dashboard')
           }, 1000)
         } else {
@@ -64,7 +72,11 @@ export default {
         }
       });
     }
-  }
+  },
+  beforeMount () {
+    const _this = this
+    document.title = `登录 - ${_this.adminTitle}`
+  },
 }
 </script>
 
