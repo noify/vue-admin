@@ -2,9 +2,9 @@
 
 使用 vue + vuex + vue-router + webpack + element-ui 搭建的后台管理模版
 
-[demo](https://noify.github.io/vue-admin/dist/index.html)
+[demo](https://noify.github.io/vue-admin/demo)
 
-# 如何使用
+## 安装运行
 
 ```bash
 npm install
@@ -12,7 +12,7 @@ npm install
 npm run serve
 ```
 
-# Tabs
+## Tabs
 
 tabs存放在`layout.vue`上，并使用`keep-alive`缓存，需要设置默认tabs
 
@@ -27,9 +27,9 @@ tabs: [{
 }]
 ```
 
-# 配置
+## 配置
 
-可以一开始就设置好，也可以动态设置标题、菜单等配置
+标题、菜单等配置
 
 ```js
 // @/store/index.js
@@ -52,7 +52,13 @@ adminConfig: {
 }
 ```
 
-# 其他
+也可以动态设置
+
+```js
+this.$store.commit('setAdminConfig', {type: 'adminName', value: '管理者'})
+```
+
+## 其他
 
 由于只是演示，所以该项目引入整个 Element，你也可以按需引入
 
