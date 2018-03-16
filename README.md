@@ -2,7 +2,7 @@
 
 使用 vue + vuex + vue-router + webpack + element-ui 搭建的后台管理模版
 
-[demo](https://noify.github.io/vue-admin/demo)
+[demo](https://noify.github.io/vue-admin/demo/index.html)
 
 ## 安装运行
 
