@@ -17,8 +17,8 @@
         </div>
       </el-aside>
       <el-container>
-        <el-header style="height: 56px;">
-          <el-tabs v-model="tabsActive" type="card" @tab-remove="removeTab" @tab-click="clickTab">
+        <el-header style="height: 61px;">
+          <el-tabs v-model="tabsActive" type="border-card"  @tab-remove="removeTab" @tab-click="clickTab">
             <el-tab-pane v-for="i in tabs" :key="i.name" :label="i.title" :path="i.path" :name="i.name" :closable="i.closable"></el-tab-pane>
           </el-tabs>
           <el-dropdown @command="dropdownClick">
@@ -130,9 +130,9 @@ export default {
             }
           }
         });
+        _this.tabsActive = activeName;
+        _this.$router.push(activeName);
       }
-      _this.tabsActive = activeName;
-       _this.$router.push(activeName)
       _this.tabs = tabs.filter(tab => tab.name !== targetName);
     },
     dropdownClick(command) {
@@ -220,6 +220,8 @@ export default {
     > .el-container{
       > .el-main {
         flex: initial;
+        z-index: 2;
+        background: #fff;
         padding: 0px;
         margin: 20px;
         margin-top: -1px;
@@ -236,12 +238,10 @@ export default {
       }
       > .el-header {
         position: relative;
+        padding-top: 25px;
         .el-tabs--card>.el-tabs__header .el-tabs__item.is-closable:hover{
           padding-left: 20px;
           padding-right: 20px;
-        }
-        .el-tabs__header {
-          margin: 20px 0 0;
         }
         .el-tabs__item {
           height: 35px;
